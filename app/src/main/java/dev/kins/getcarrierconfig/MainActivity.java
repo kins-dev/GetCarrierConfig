@@ -51,13 +51,13 @@ public class MainActivity extends AppCompatActivity {
 
     String GetArray(Object[] arr)
     {
-        StringBuilder value= new StringBuilder("[");
-        String prefix="";
+        StringBuilder value= new StringBuilder();
+        String prefix="[";
         for (Object o : arr) {
             value.append(prefix).append(MakeJsonString(o));
             prefix = ", ";
         }
-        return value + "]";
+        return value.append("]").toString();
     }
 
     /**
@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
      */
     String MakeJsonString(@NonNull Object o) {
         String result;
+        Log.v("GetCarrierConfig", o.toString());
         if (o.getClass().isArray()) {
             result = GetArray((Object[]) o);
         } else if (o instanceof String) {
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
     @NonNull
     private String GenerateJSON() {
-        StringBuilder json= new StringBuilder("{\n  \"Device\": \"" + getDeviceName() + "\"");
+        StringBuilder json= new StringBuilder();
         Context context = getApplicationContext();
         CarrierConfigManager ccm = context.getSystemService(CarrierConfigManager.class);
         Class<? extends CarrierConfigManager> ccm_cls = ccm.getClass();
@@ -108,15 +109,27 @@ public class MainActivity extends AppCompatActivity {
         String prefix=",\n  ";
         Field[] fields = ccm_cls.getFields();
         Class<?> strType = String.class;
+        json.append("{\n  \"Device\": \"");
+        json.append(getDeviceName());
+        json.append("\"");
         for (Field field : fields) {
             // Only look at string fields
             if (field.getType().isAssignableFrom(strType)) {
                 String name = field.getName();
                 try {
-                    Object value = carrierConfig.get(Objects.requireNonNull(field.get(ccm)).toString());
-                    json.append(prefix).append("\"").append(name).append("\" : ").append(MakeJsonString(value));
+                    String field_value = Objects.requireNonNull(field.get(ccm)).toString();
+                    Log.v("GetCarrierConfig", field_value);
+                    Object value = carrierConfig.get(field_value);
+                    String element = prefix +
+                            "\"" +
+                            name +
+                            "\" : " +
+                            MakeJsonString(value);
+                    json.append(element);
                 } catch (Exception ex) {
                     Log.v("GetCarrierConfig", "Couldn't get data for: " + name);
+                    Log.v("GetCarrierConfig", ex.getMessage());
+                    Log.v("GetCarrierConfig", Log.getStackTraceString(ex));
                 }
             }
         }
