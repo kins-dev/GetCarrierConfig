@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">GetCarrierConfig</string>
+    <string name="share_json">Share JSON</string>
+</resources>
