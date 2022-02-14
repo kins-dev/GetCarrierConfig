@@ -21,12 +21,12 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String EscapeQuotes(String str)
+    private String QuoteString(String str)
     {
         return "\"" + str.replaceAll("\"", "\\\\\"") + "\"";
     }
 
-    public String getDeviceName() {
+    private String GetDeviceName() {
         String manufacturer = Build.MANUFACTURER;
         String model = Build.MODEL;
         if (model.toLowerCase().startsWith(manufacturer.toLowerCase())) {
@@ -48,11 +48,23 @@ public class MainActivity extends AppCompatActivity {
             return Character.toUpperCase(first) + s.substring(1);
         }
     }
-
-    String GetArray(Object[] arr)
+    private <T>String GetArrayG(int[] arr)
     {
         StringBuilder value= new StringBuilder();
-        String prefix="[";
+        String prefix="";
+        value.append("[");
+        for (int i : arr) {
+            value.append(prefix).append(i);
+            prefix = ", ";
+        }
+        return value.append("]").toString();
+    }
+
+    private String GetArray(Object[] arr)
+    {
+        StringBuilder value= new StringBuilder();
+        String prefix="";
+        value.append("[");
         for (Object o : arr) {
             value.append(prefix).append(MakeJsonString(o));
             prefix = ", ";
@@ -64,13 +76,18 @@ public class MainActivity extends AppCompatActivity {
      * @param o value to add to the JSON
      * @return Properly escaped json value for the type
      */
-    String MakeJsonString(@NonNull Object o) {
-        String result;
-        Log.v("GetCarrierConfig", o.toString());
+    String MakeJsonString(Object o) {
+        String result="";
         if (o.getClass().isArray()) {
-            result = GetArray((Object[]) o);
+            if(o instanceof Object[]) {
+                result = GetArray((Object[]) o);
+            }else if (o instanceof int[]){
+                result = GetArrayG((int[]) o);
+            }else{
+                Log.v(getString(R.string.TAG), "Unhandled type: " + o.getClass());
+            }
         } else if (o instanceof String) {
-            result = EscapeQuotes(o.toString());
+            result = QuoteString(o.toString());
         } else if (o instanceof Boolean) {
             result = o.toString();
         } else if (o instanceof Long) {
@@ -82,8 +99,9 @@ public class MainActivity extends AppCompatActivity {
         } else if (o instanceof Float) {
             result = o.toString();
         } else {
-            result = EscapeQuotes(o.toString());
+            result = QuoteString(o.toString());
         }
+        Log.v(getString(R.string.TAG), result);
         return result;
     }
 
@@ -103,41 +121,55 @@ public class MainActivity extends AppCompatActivity {
     private String GenerateJSON() {
         StringBuilder json= new StringBuilder();
         Context context = getApplicationContext();
-        CarrierConfigManager ccm = context.getSystemService(CarrierConfigManager.class);
-        Class<? extends CarrierConfigManager> ccm_cls = ccm.getClass();
+        Class<? extends CarrierConfigManager> ccm_cls = CarrierConfigManager.class;
+        Class<?>[] nested_classes = ccm_cls.getDeclaredClasses();
+        CarrierConfigManager ccm = context.getSystemService(ccm_cls);
         PersistableBundle carrierConfig = ccm.getConfigForSubId(1);
-        String prefix=",\n  ";
-        Field[] fields = ccm_cls.getFields();
-        Class<?> strType = String.class;
         json.append("{\n  \"Device\": \"");
-        json.append(getDeviceName());
+        json.append(GetDeviceName());
         json.append("\"");
-        for (Field field : fields) {
-            // Only look at string fields
-            if (field.getType().isAssignableFrom(strType)) {
-                String name = field.getName();
-                try {
-                    String field_value = Objects.requireNonNull(field.get(ccm)).toString();
-                    Log.v("GetCarrierConfig", field_value);
-                    Object value = carrierConfig.get(field_value);
-                    String element = prefix +
-                            "\"" +
-                            name +
-                            "\" : " +
-                            MakeJsonString(value);
-                    json.append(element);
-                } catch (Exception ex) {
-                    Log.v("GetCarrierConfig", "Couldn't get data for: " + name);
-                    Log.v("GetCarrierConfig", ex.getMessage());
-                    Log.v("GetCarrierConfig", Log.getStackTraceString(ex));
-                }
-            }
+
+        json.append(GetClassFieldData(ccm_cls, ccm, carrierConfig));
+        for (Class<?> current_class : nested_classes) {
+            json.append(GetClassFieldData(current_class, ccm, carrierConfig));
         }
         return json + "\n}";
     }
 
+    private String GetClassFieldData(Class<?> current_class, CarrierConfigManager ccm, PersistableBundle carrierConfig) {
+        StringBuilder json = new StringBuilder();
+        String prefix=",\n  ";
+        Field[] fields = current_class.getFields();
+        for (Field field : fields) {
+            String name = field.getName();
+            // Only look at string fields
+            if (field.getType().isAssignableFrom(String.class)) {
+                try {
+                    String field_value = Objects.requireNonNull(field.get(ccm)).toString();
+                    Object value = carrierConfig.get(field_value);
+                    // Ignore null values
+                    if(value == null)
+                    {
+                        continue;
+                    }
+                    String element = prefix +
+                            "\"" +
+                            name +
+                            "\": " +
+                            MakeJsonString(value);
+                    json.append(element);
+                } catch (Exception ex) {
+                    Log.v(getString(R.string.TAG), "Couldn't get data for: " + name);
+                    Log.v(getString(R.string.TAG), ex.getMessage());
+                    Log.v(getString(R.string.TAG), Log.getStackTraceString(ex));
+                }
+            }
+        }
+        return json.toString();
+    }
+
     private void LogJSON(String data) {
-        Log.v("GetCarrierConfig", data);
+        Log.v(getString(R.string.TAG), data);
     }
 
     private void ShareJSON(String data) {
