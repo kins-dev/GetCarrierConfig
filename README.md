@@ -2,7 +2,9 @@
 
 A simple android app that pulls all of the readable carrier configuration from your provider
 
-Requires `Phone` permission
+Requires `Phone` permissions to read the carrier configuration:
+
+![Open your app settings](ss1.png) ![Open the carrier config settings](ss2.png) ![Open app permissions](ss3.png) ![Give the app Phone permissions](ss4.png)
 
 This is what the results look like:
 
