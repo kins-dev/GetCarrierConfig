@@ -12,6 +12,7 @@ This is what the results look like:
 
 ```json
 {
+  "Carrier": "Google Fi",
   "Device": "Google Pixel 6 Pro",
   "ENABLE_EAP_METHOD_PREFIX_BOOL": false,
   "IMSI_KEY_AVAILABILITY_INT": 0,

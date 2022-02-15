@@ -3,4 +3,5 @@
     <string name="share_json">Share JSON</string>
     <string name="PermWarning">Make sure app has phone read permission</string>
     <string name="TAG">GetCarrierConfig</string>
+    <string name="indent">\t</string>
 </resources>

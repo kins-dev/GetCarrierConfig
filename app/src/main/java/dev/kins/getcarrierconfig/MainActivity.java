@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.telephony.CarrierConfigManager;
 import android.os.PersistableBundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.os.Bundle;
 import android.view.View;
@@ -21,21 +22,25 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String QuoteString(String str)
+    private String QuoteString(Object o)
     {
-        return "\"" + str.replaceAll("\"", "\\\\\"") + "\"";
+        return String.format("\"%s\"",
+                o.toString().replaceAll("\"", "\\\\\""));
     }
 
-    private String GetDeviceName() {
+    private StringBuilder GetDeviceName() {
+        StringBuilder result;
         String manufacturer = Build.MANUFACTURER;
         String model = Build.MODEL;
         if (model.toLowerCase().startsWith(manufacturer.toLowerCase())) {
-            return Capitalize(model);
+            result = new StringBuilder(Capitalize(model));
         } else {
-            return Capitalize(manufacturer) + " " + model;
+            result = new StringBuilder(Capitalize(manufacturer));
+            result.append(" ");
+            result.append(Capitalize(model));
         }
+        return result;
     }
-
 
     private String Capitalize(String s) {
         if (s == null || s.length() == 0) {
@@ -48,10 +53,11 @@ public class MainActivity extends AppCompatActivity {
             return Character.toUpperCase(first) + s.substring(1);
         }
     }
+
     private <T>String GetIntArray(int[] arr, String indent)
     {
         StringBuilder value= new StringBuilder();
-        String itemIndent="    ";
+        String itemIndent=getString(R.string.indent);
         String prefix= String.format("\n%s", indent);
         String suffix="";
         value.append("[");
@@ -68,14 +74,14 @@ public class MainActivity extends AppCompatActivity {
     private String GetArray(Object[] arr, String indent)
     {
         StringBuilder value= new StringBuilder();
-        String itemIndent="    ";
+        String itemIndent = getString(R.string.indent);
         String prefix= String.format("\n%s", indent);
         String suffix="";
         value.append("[");
         for (Object o : arr) {
             value.append(prefix);
             value.append(itemIndent);
-            value.append(MakeJsonString(o, indent + itemIndent));
+            value.append(MakeJsonString(o, String.format("%s%s", indent, itemIndent)));
             prefix = String.format(",\n%s", indent);
             suffix = String.format("\n%s", indent);
         }
@@ -88,37 +94,26 @@ public class MainActivity extends AppCompatActivity {
      * @return Properly escaped json value for the type
      */
     String MakeJsonString(Object o, String indent) {
-        String result="";
+        if(null == o) return "null";
         if (o.getClass().isArray()) {
-            if(o instanceof Object[]) {
-                result = GetArray((Object[]) o, indent);
-            }else if (o instanceof int[]){
-                result = GetIntArray((int[]) o, indent);
-            }else{
-                Log.v(getString(R.string.TAG), "Unhandled type: " + o.getClass());
-            }
-        } else if (o instanceof String) {
-            result = QuoteString(o.toString());
-        } else if (o instanceof Boolean) {
-            result = o.toString();
-        } else if (o instanceof Long) {
-            result = o.toString();
-        } else if (o instanceof Integer) {
-            result = o.toString();
-        } else if (o instanceof Double) {
-            result = o.toString();
-        } else if (o instanceof Float) {
-            result = o.toString();
-        } else {
-            result = QuoteString(o.toString());
+            if (o instanceof Object[]) return GetArray((Object[]) o, indent);
+            if (o instanceof int[]) return GetIntArray((int[]) o, indent);
+            Log.v(getString(R.string.TAG), String.format("Unhandled type: %s", o.getClass()));
         }
-        return result;
+        if ((o instanceof Boolean) ||
+                    (o instanceof Long) ||
+                    (o instanceof Integer) ||
+                    (o instanceof Double) ||
+                    (o instanceof Float)) {
+            return o.toString();
+        }
+        return QuoteString(o);
     }
 
     public void OnClick(View view)
     {
         try{
-            String json_data = GenerateJSON();
+            String json_data = GenerateJSON().toString();
             LogJSON(json_data);
             ShareJSON(json_data);
         }catch (Exception ex)
@@ -127,9 +122,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private String GetCarrierName()
+    {
+        Context context = getApplicationContext();
+        TelephonyManager telephonyManager = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE));
+        return telephonyManager.getNetworkOperatorName();
+    }
+
     @NonNull
-    private String GenerateJSON() {
-        String indent = "    ";
+    private StringBuilder GenerateJSON() {
+        String indent = getString(R.string.indent);
         StringBuilder json= new StringBuilder();
         Context context = getApplicationContext();
         Class<? extends CarrierConfigManager> ccm_cls = CarrierConfigManager.class;
@@ -138,18 +140,24 @@ public class MainActivity extends AppCompatActivity {
         PersistableBundle carrierConfig = ccm.getConfigForSubId(1);
         json.append("{\n");
         json.append(indent);
-        json.append("\"Device\": \"");
-        json.append(GetDeviceName());
-        json.append("\"");
+        json.append(QuoteString("Carrier"));
+        json.append(": ");
+        json.append(QuoteString(GetCarrierName()));
+        json.append(",\n");
+        json.append(indent);
+        json.append(QuoteString("Device"));
+        json.append(": ");
+        json.append(QuoteString(GetDeviceName().toString()));
 
         json.append(GetClassFieldData(ccm_cls, ccm, carrierConfig, indent));
         for (Class<?> current_class : nested_classes) {
             json.append(GetClassFieldData(current_class, ccm, carrierConfig, indent));
         }
-        return json + "\n}";
+        json.append("\n}");
+        return json;
     }
 
-    private String GetClassFieldData(Class<?> current_class, CarrierConfigManager ccm, PersistableBundle carrierConfig, String indent) {
+    private StringBuilder GetClassFieldData(Class<?> current_class, CarrierConfigManager ccm, PersistableBundle carrierConfig, String indent) {
         StringBuilder json = new StringBuilder();
         String prefix=",\n" + indent;
         Field[] fields = current_class.getFields();
@@ -165,11 +173,10 @@ public class MainActivity extends AppCompatActivity {
                     {
                         continue;
                     }
-                    String element = prefix +
-                            "\"" +
-                            name +
-                            "\": " +
-                            MakeJsonString(value, indent);
+                    String element = String.format("%s%s: %s",
+                            prefix,
+                            QuoteString(name),
+                            MakeJsonString(value, indent));
                     json.append(element);
                 } catch (Exception ex) {
                     Log.v(getString(R.string.TAG), "Couldn't get data for: " + name);
@@ -178,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        return json.toString();
+        return json;
     }
 
     private void LogJSON(String data) {
