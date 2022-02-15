@@ -48,41 +48,52 @@ public class MainActivity extends AppCompatActivity {
             return Character.toUpperCase(first) + s.substring(1);
         }
     }
-    private <T>String GetArrayG(int[] arr)
+    private <T>String GetIntArray(int[] arr, String indent)
     {
         StringBuilder value= new StringBuilder();
-        String prefix="";
+        String itemIndent="    ";
+        String prefix= String.format("\n%s", indent);
+        String suffix="";
         value.append("[");
         for (int i : arr) {
-            value.append(prefix).append(i);
-            prefix = ", ";
+            value.append(prefix);
+            value.append(itemIndent);
+            value.append(i);
+            prefix = String.format(",\n%s", indent);
+            suffix = String.format("\n%s", indent);
         }
-        return value.append("]").toString();
+        return value.append(suffix).append("]").toString();
     }
 
-    private String GetArray(Object[] arr)
+    private String GetArray(Object[] arr, String indent)
     {
         StringBuilder value= new StringBuilder();
-        String prefix="";
+        String itemIndent="    ";
+        String prefix= String.format("\n%s", indent);
+        String suffix="";
         value.append("[");
         for (Object o : arr) {
-            value.append(prefix).append(MakeJsonString(o));
-            prefix = ", ";
+            value.append(prefix);
+            value.append(itemIndent);
+            value.append(MakeJsonString(o, indent + itemIndent));
+            prefix = String.format(",\n%s", indent);
+            suffix = String.format("\n%s", indent);
         }
-        return value.append("]").toString();
+        return value.append(suffix).append("]").toString();
     }
 
     /**
      * @param o value to add to the JSON
+     * @param indent How far to indent this item
      * @return Properly escaped json value for the type
      */
-    String MakeJsonString(Object o) {
+    String MakeJsonString(Object o, String indent) {
         String result="";
         if (o.getClass().isArray()) {
             if(o instanceof Object[]) {
-                result = GetArray((Object[]) o);
+                result = GetArray((Object[]) o, indent);
             }else if (o instanceof int[]){
-                result = GetArrayG((int[]) o);
+                result = GetIntArray((int[]) o, indent);
             }else{
                 Log.v(getString(R.string.TAG), "Unhandled type: " + o.getClass());
             }
@@ -101,7 +112,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             result = QuoteString(o.toString());
         }
-        Log.v(getString(R.string.TAG), result);
         return result;
     }
 
@@ -119,26 +129,29 @@ public class MainActivity extends AppCompatActivity {
 
     @NonNull
     private String GenerateJSON() {
+        String indent = "    ";
         StringBuilder json= new StringBuilder();
         Context context = getApplicationContext();
         Class<? extends CarrierConfigManager> ccm_cls = CarrierConfigManager.class;
         Class<?>[] nested_classes = ccm_cls.getDeclaredClasses();
         CarrierConfigManager ccm = context.getSystemService(ccm_cls);
         PersistableBundle carrierConfig = ccm.getConfigForSubId(1);
-        json.append("{\n  \"Device\": \"");
+        json.append("{\n");
+        json.append(indent);
+        json.append("\"Device\": \"");
         json.append(GetDeviceName());
         json.append("\"");
 
-        json.append(GetClassFieldData(ccm_cls, ccm, carrierConfig));
+        json.append(GetClassFieldData(ccm_cls, ccm, carrierConfig, indent));
         for (Class<?> current_class : nested_classes) {
-            json.append(GetClassFieldData(current_class, ccm, carrierConfig));
+            json.append(GetClassFieldData(current_class, ccm, carrierConfig, indent));
         }
         return json + "\n}";
     }
 
-    private String GetClassFieldData(Class<?> current_class, CarrierConfigManager ccm, PersistableBundle carrierConfig) {
+    private String GetClassFieldData(Class<?> current_class, CarrierConfigManager ccm, PersistableBundle carrierConfig, String indent) {
         StringBuilder json = new StringBuilder();
-        String prefix=",\n  ";
+        String prefix=",\n" + indent;
         Field[] fields = current_class.getFields();
         for (Field field : fields) {
             String name = field.getName();
@@ -156,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
                             "\"" +
                             name +
                             "\": " +
-                            MakeJsonString(value);
+                            MakeJsonString(value, indent);
                     json.append(element);
                 } catch (Exception ex) {
                     Log.v(getString(R.string.TAG), "Couldn't get data for: " + name);

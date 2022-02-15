@@ -15,9 +15,24 @@ This is what the results look like:
   "Device": "Google Pixel 6 Pro",
   "ENABLE_EAP_METHOD_PREFIX_BOOL": false,
   "IMSI_KEY_AVAILABILITY_INT": 0,
-  "KEY_5G_NR_SSRSRP_THRESHOLDS_INT_ARRAY": [-110, -90, -80, -65],
-  "KEY_5G_NR_SSRSRQ_THRESHOLDS_INT_ARRAY": [-31, -19, -7, 6],
-  "KEY_5G_NR_SSSINR_THRESHOLDS_INT_ARRAY": [-5, 5, 15, 30],
+  "KEY_5G_NR_SSRSRP_THRESHOLDS_INT_ARRAY": [
+    -110,
+    -90,
+    -80,
+    -65
+  ],
+  "KEY_5G_NR_SSRSRQ_THRESHOLDS_INT_ARRAY": [
+    -31,
+    -19,
+    -7,
+    6
+  ],
+  "KEY_5G_NR_SSSINR_THRESHOLDS_INT_ARRAY": [
+    -5,
+    5,
+    15,
+    30
+  ],
   "KEY_ADDITIONAL_CALL_SETTING_BOOL": true,
   "KEY_ALLOW_ADDING_APNS_BOOL": true,
   "KEY_ALLOW_ADD_CALL_DURING_VIDEO_CALL_BOOL": true,
@@ -47,9 +62,16 @@ This is what the results look like:
   "KEY_CARRIER_CONFIG_APPLIED_BOOL": false,
   "KEY_CARRIER_CONFIG_VERSION_STRING": "",
   "KEY_CARRIER_CROSS_SIM_IMS_AVAILABLE_BOOL": false,
-  "KEY_CARRIER_DEFAULT_ACTIONS_ON_DEFAULT_NETWORK_AVAILABLE": ["false: 7", "true: 8"],
-  "KEY_CARRIER_DEFAULT_ACTIONS_ON_REDIRECTION_STRING_ARRAY": ["9, 4, 1"],
-  "KEY_CARRIER_DEFAULT_ACTIONS_ON_RESET": ["6, 8"],
+  "KEY_CARRIER_DEFAULT_ACTIONS_ON_DEFAULT_NETWORK_AVAILABLE": [
+    "false: 7",
+    "true: 8"
+  ],
+  "KEY_CARRIER_DEFAULT_ACTIONS_ON_REDIRECTION_STRING_ARRAY": [
+    "9, 4, 1"
+  ],
+  "KEY_CARRIER_DEFAULT_ACTIONS_ON_RESET": [
+    "6, 8"
+  ],
   "KEY_CARRIER_DEFAULT_WFC_IMS_ENABLED_BOOL": false,
   "KEY_CARRIER_DEFAULT_WFC_IMS_MODE_INT": 2,
   "KEY_CARRIER_DEFAULT_WFC_IMS_ROAMING_MODE_INT": 2,
@@ -62,7 +84,10 @@ This is what the results look like:
   "KEY_CARRIER_INSTANT_LETTERING_LENGTH_LIMIT_INT": 64,
   "KEY_CARRIER_NAME_OVERRIDE_BOOL": false,
   "KEY_CARRIER_NAME_STRING": "",
-  "KEY_CARRIER_NR_AVAILABILITIES_INT_ARRAY": [1, 2],
+  "KEY_CARRIER_NR_AVAILABILITIES_INT_ARRAY": [
+    1,
+    2
+  ],
   "KEY_CARRIER_PROVISIONS_WIFI_MERGED_NETWORKS_BOOL": false,
   "KEY_CARRIER_RCS_PROVISIONING_REQUIRED_BOOL": true,
   "KEY_CARRIER_SETTINGS_ACTIVITY_COMPONENT_NAME_STRING": "",
@@ -105,7 +130,9 @@ This is what the results look like:
   "KEY_DISABLE_CDMA_ACTIVATION_CODE_BOOL": false,
   "KEY_DISABLE_CHARGE_INDICATION_BOOL": false,
   "KEY_DISABLE_SUPPLEMENTARY_SERVICES_IN_AIRPLANE_MODE_BOOL": false,
-  "KEY_DISCONNECT_CAUSE_PLAY_BUSYTONE_INT_ARRAY": [4],
+  "KEY_DISCONNECT_CAUSE_PLAY_BUSYTONE_INT_ARRAY": [
+    4
+  ],
   "KEY_DISPLAY_CALL_STRENGTH_INDICATOR_BOOL": true,
   "KEY_DISPLAY_HD_AUDIO_PROPERTY_BOOL": true,
   "KEY_DROP_VIDEO_CALL_WHEN_ANSWERING_AUDIO_CALL_BOOL": false,
@@ -144,8 +171,18 @@ This is what the results look like:
   "KEY_IMS_DTMF_TONE_DELAY_INT": 0,
   "KEY_IS_IMS_CONFERENCE_SIZE_ENFORCED_BOOL": false,
   "KEY_LTE_ENABLED_BOOL": true,
-  "KEY_LTE_RSRQ_THRESHOLDS_INT_ARRAY": [-20, -17, -14, -11],
-  "KEY_LTE_RSSNR_THRESHOLDS_INT_ARRAY": [-3, 1, 5, 13],
+  "KEY_LTE_RSRQ_THRESHOLDS_INT_ARRAY": [
+    -20,
+    -17,
+    -14,
+    -11
+  ],
+  "KEY_LTE_RSSNR_THRESHOLDS_INT_ARRAY": [
+    -3,
+    1,
+    5,
+    13
+  ],
   "KEY_MDN_IS_ADDITIONAL_VOICEMAIL_NUMBER_BOOL": false,
   "KEY_MMS_ALIAS_ENABLED_BOOL": false,
   "KEY_MMS_ALIAS_MAX_CHARS_INT": 48,
@@ -181,7 +218,14 @@ This is what the results look like:
   "KEY_MMS_USER_AGENT_STRING": "",
   "KEY_MONTHLY_DATA_CYCLE_DAY_INT": -1,
   "KEY_ONLY_AUTO_SELECT_IN_HOME_NETWORK_BOOL": false,
-  "KEY_ONLY_SINGLE_DC_ALLOWED_INT_ARRAY": [4, 5, 6, 7, 8, 12],
+  "KEY_ONLY_SINGLE_DC_ALLOWED_INT_ARRAY": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    12
+  ],
   "KEY_OPERATOR_SELECTION_EXPAND_BOOL": true,
   "KEY_OPPORTUNISTIC_NETWORK_BACKOFF_TIME_LONG": 10000,
   "KEY_OPPORTUNISTIC_NETWORK_DATA_SWITCH_EXIT_HYSTERESIS_TIME_LONG": 3000,
@@ -199,7 +243,9 @@ This is what the results look like:
   "KEY_PREVENT_CLIR_ACTIVATION_AND_DEACTIVATION_CODE_BOOL": false,
   "KEY_RADIO_RESTART_FAILURE_CAUSES_INT_ARRAY": [],
   "KEY_RCS_CONFIG_SERVER_URL_STRING": "",
-  "KEY_READ_ONLY_APN_TYPES_STRING_ARRAY": ["dun"],
+  "KEY_READ_ONLY_APN_TYPES_STRING_ARRAY": [
+    "dun"
+  ],
   "KEY_REQUIRE_ENTITLEMENT_CHECKS_BOOL": true,
   "KEY_RESTART_RADIO_ON_PDP_FAIL_REGULAR_DEACTIVATION_BOOL": false,
   "KEY_RTT_SUPPORTED_BOOL": false,
@@ -269,11 +315,26 @@ This is what the results look like:
   "KEY_ADD_KE_TO_CHILD_SESSION_REKEY_BOOL": false,
   "KEY_CHILD_SA_REKEY_HARD_TIMER_SEC_INT": 7200,
   "KEY_CHILD_SA_REKEY_SOFT_TIMER_SEC_INT": 3600,
-  "KEY_CHILD_SESSION_AES_CBC_KEY_SIZE_INT_ARRAY": [128, 192, 256],
-  "KEY_CHILD_SESSION_AES_CTR_KEY_SIZE_INT_ARRAY": [128, 192, 256],
-  "KEY_DIFFIE_HELLMAN_GROUPS_INT_ARRAY": [2, 5, 14],
+  "KEY_CHILD_SESSION_AES_CBC_KEY_SIZE_INT_ARRAY": [
+    128,
+    192,
+    256
+  ],
+  "KEY_CHILD_SESSION_AES_CTR_KEY_SIZE_INT_ARRAY": [
+    128,
+    192,
+    256
+  ],
+  "KEY_DIFFIE_HELLMAN_GROUPS_INT_ARRAY": [
+    2,
+    5,
+    14
+  ],
   "KEY_DPD_TIMER_SEC_INT": 120,
-  "KEY_EPDG_ADDRESS_PRIORITY_INT_ARRAY": [1, 0],
+  "KEY_EPDG_ADDRESS_PRIORITY_INT_ARRAY": [
+    1,
+    0
+  ],
   "KEY_EPDG_AUTHENTICATION_METHOD_INT": 0,
   "KEY_EPDG_PCO_ID_IPV4_INT": 0,
   "KEY_EPDG_PCO_ID_IPV6_INT": 0,
@@ -283,23 +344,73 @@ This is what the results look like:
   "KEY_IKE_REKEY_HARD_TIMER_SEC_INT": 14400,
   "KEY_IKE_REKEY_SOFT_TIMER_SEC_INT": 7200,
   "KEY_IKE_REMOTE_ID_TYPE_INT": 2,
-  "KEY_IKE_SESSION_AES_CBC_KEY_SIZE_INT_ARRAY": [128, 192, 256],
-  "KEY_IKE_SESSION_AES_CTR_KEY_SIZE_INT_ARRAY": [128, 192, 256],
+  "KEY_IKE_SESSION_AES_CBC_KEY_SIZE_INT_ARRAY": [
+    128,
+    192,
+    256
+  ],
+  "KEY_IKE_SESSION_AES_CTR_KEY_SIZE_INT_ARRAY": [
+    128,
+    192,
+    256
+  ],
   "KEY_MAX_RETRIES_INT": 3,
   "KEY_MCC_MNCS_STRING_ARRAY": [],
   "KEY_NATT_KEEP_ALIVE_TIMER_SEC_INT": 20,
-  "KEY_RETRANSMIT_TIMER_MSEC_INT_ARRAY": [500, 1000, 2000, 4000, 8000],
-  "KEY_SUPPORTED_CHILD_SESSION_ENCRYPTION_ALGORITHMS_INT_ARRAY": [12],
-  "KEY_SUPPORTED_IKE_SESSION_ENCRYPTION_ALGORITHMS_INT_ARRAY": [12],
-  "KEY_SUPPORTED_INTEGRITY_ALGORITHMS_INT_ARRAY": [5, 2, 12, 13, 14],
-  "KEY_SUPPORTED_PRF_ALGORITHMS_INT_ARRAY": [2, 4, 5, 6, 7],
+  "KEY_RETRANSMIT_TIMER_MSEC_INT_ARRAY": [
+    500,
+    1000,
+    2000,
+    4000,
+    8000
+  ],
+  "KEY_SUPPORTED_CHILD_SESSION_ENCRYPTION_ALGORITHMS_INT_ARRAY": [
+    12
+  ],
+  "KEY_SUPPORTED_IKE_SESSION_ENCRYPTION_ALGORITHMS_INT_ARRAY": [
+    12
+  ],
+  "KEY_SUPPORTED_INTEGRITY_ALGORITHMS_INT_ARRAY": [
+    5,
+    2,
+    12,
+    13,
+    14
+  ],
+  "KEY_SUPPORTED_PRF_ALGORITHMS_INT_ARRAY": [
+    2,
+    4,
+    5,
+    6,
+    7
+  ],
   "KEY_ENABLE_PRESENCE_CAPABILITY_EXCHANGE_BOOL": false,
   "KEY_ENABLE_PRESENCE_GROUP_SUBSCRIBE_BOOL": false,
   "KEY_ENABLE_PRESENCE_PUBLISH_BOOL": false,
   "KEY_IMS_SINGLE_REGISTRATION_REQUIRED_BOOL": false,
   "KEY_NON_RCS_CAPABILITIES_CACHE_EXPIRATION_SEC_INT": 2592000,
   "KEY_RCS_BULK_CAPABILITY_EXCHANGE_BOOL": false,
-  "KEY_RCS_FEATURE_TAG_ALLOWED_STRING_ARRAY": ["+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.oma.cpm.msg\"", "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.oma.cpm.largemsg\"", "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.oma.cpm.deferred\"", "+g.gsma.rcs.cpm.pager-large", "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.oma.cpm.session\"", "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.oma.cpm.filetransfer\"", "+g.3gpp.iari-ref=\"urn%3Aurn-7%3A3gpp-application.ims.iari.rcs.fthttp\"", "+g.3gpp.iari-ref=\"urn%3Aurn-7%3A3gpp-application.ims.iari.rcs.ftsms\"", "+g.3gpp.iari-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.gsma.callcomposer\"", "+g.gsma.callcomposer", "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.gsma.callunanswered\"", "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.gsma.sharedmap\"", "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.gsma.sharedsketch\"", "+g.3gpp.iari-ref=\"urn%3Aurn-7%3A3gpp-application.ims.iari.rcs.geopush\"", "+g.3gpp.iari-ref=\"urn%3Aurn-7%3A3gpp-application.ims.iari.rcs.geosms\"", "+g.3gpp.iari-ref=\"urn%3Aurn-7%3A3gpp-application.ims.iari.rcs.chatbot\"", "+g.3gpp.iari-ref=\"urn%3Aurn-7%3A3gpp-application.ims.iari.rcs.chatbot.sa\"", "+g.gsma.rcs.botversion=\"#=1,#=2\"", "+g.gsma.rcs.cpimext"],
+  "KEY_RCS_FEATURE_TAG_ALLOWED_STRING_ARRAY": [
+    "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.oma.cpm.msg\"",
+    "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.oma.cpm.largemsg\"",
+    "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.oma.cpm.deferred\"",
+    "+g.gsma.rcs.cpm.pager-large",
+    "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.oma.cpm.session\"",
+    "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.oma.cpm.filetransfer\"",
+    "+g.3gpp.iari-ref=\"urn%3Aurn-7%3A3gpp-application.ims.iari.rcs.fthttp\"",
+    "+g.3gpp.iari-ref=\"urn%3Aurn-7%3A3gpp-application.ims.iari.rcs.ftsms\"",
+    "+g.3gpp.iari-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.gsma.callcomposer\"",
+    "+g.gsma.callcomposer",
+    "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.gsma.callunanswered\"",
+    "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.gsma.sharedmap\"",
+    "+g.3gpp.icsi-ref=\"urn%3Aurn-7%3A3gpp-service.ims.icsi.gsma.sharedsketch\"",
+    "+g.3gpp.iari-ref=\"urn%3Aurn-7%3A3gpp-application.ims.iari.rcs.geopush\"",
+    "+g.3gpp.iari-ref=\"urn%3Aurn-7%3A3gpp-application.ims.iari.rcs.geosms\"",
+    "+g.3gpp.iari-ref=\"urn%3Aurn-7%3A3gpp-application.ims.iari.rcs.chatbot\"",
+    "+g.3gpp.iari-ref=\"urn%3Aurn-7%3A3gpp-application.ims.iari.rcs.chatbot.sa\"",
+    "+g.gsma.rcs.botversion=\"#=1,#=2\"",
+    "+g.gsma.rcs.cpimext"
+  ],
   "KEY_WIFI_OFF_DEFERRING_TIME_MILLIS_INT": 4000,
   "KEY_PERSIST_LPP_MODE_BOOL": true,
   "KEY_SETTINGS_DEFAULT_PROTOCOL_STRING": "",
