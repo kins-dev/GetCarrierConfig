@@ -4,4 +4,7 @@
     <string name="PermWarning">Make sure app has phone read permission</string>
     <string name="TAG">GetCarrierConfig</string>
     <string name="indent">\t</string>
+    <string name="perms_msg">This app requires phone read permissions.\nThe description of those permissions is overly broad.</string>
+    <string name="show_json">Show JSON</string>
+    <string name="carrier_configuration_in_json_format">Carrier configuration in JSON format</string>
 </resources>

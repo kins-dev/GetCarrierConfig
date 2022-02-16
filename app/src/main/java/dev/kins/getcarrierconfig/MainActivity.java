@@ -3,16 +3,22 @@ package dev.kins.getcarrierconfig;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.telephony.CarrierConfigManager;
 import android.os.PersistableBundle;
 import android.telephony.TelephonyManager;
+import android.text.InputType;
 import android.util.Log;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -21,6 +27,10 @@ import java.util.Objects;
 
 
 public class MainActivity extends AppCompatActivity {
+
+    static final int PHONE_PERMISSION_CODE = 100;
+    static final int PHONE_PERMISSION_SHARE_CODE = 101;
+    private TextView editText = null;
 
     private String QuoteString(Object o)
     {
@@ -110,12 +120,57 @@ public class MainActivity extends AppCompatActivity {
         return QuoteString(o);
     }
 
+    // Function to check and request permission
+    public void CheckPermission(String permission, int requestCode)
+    {
+        // Checking if permission is not granted
+        if (ContextCompat.checkSelfPermission(MainActivity.this, permission) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[] { permission }, requestCode);
+        }else{
+            GatherData(requestCode == PHONE_PERMISSION_SHARE_CODE);
+        }
+    }
+
+    // This function is called when the user accepts or decline the permission.
+    // Request Code is used to check which permission called this function.
+    // This request code is provided when the user is prompt for permission.
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode,
+                permissions,
+                grantResults);
+        if (requestCode == PHONE_PERMISSION_CODE || requestCode == PHONE_PERMISSION_SHARE_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                GatherData(requestCode == PHONE_PERMISSION_SHARE_CODE);
+            } else {
+                ShowMissingPermissionsNotice();
+            }
+        }
+    }
+
+    public void OnClick2(View view)
+    {
+        CheckPermission(Manifest.permission.READ_PHONE_STATE, PHONE_PERMISSION_CODE);
+    }
+
     public void OnClick(View view)
     {
+        CheckPermission(Manifest.permission.READ_PHONE_STATE, PHONE_PERMISSION_SHARE_CODE);
+    }
+
+    private void GatherData(boolean share) {
         try{
             String json_data = GenerateJSON().toString();
+            View v = findViewById(android.R.id.content);
+            editText.setText(json_data);
+
             LogJSON(json_data);
-            ShareJSON(json_data);
+            if(share) {
+                ShareJSON(json_data);
+            }
         }catch (Exception ex)
         {
             ShowMissingPermissionsNotice();
@@ -213,6 +268,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        editText = findViewById(R.id.editTextTextMultiLine);
     }
 }

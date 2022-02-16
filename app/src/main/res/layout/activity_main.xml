@@ -7,20 +7,74 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="121dp"
-        android:layout_marginTop="169dp"
-        android:layout_marginEnd="121dp"
-        android:layout_marginBottom="169dp"
-        android:onClick="OnClick"
-        android:text="@string/share_json"
-        app:icon="@android:drawable/ic_menu_share"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="fill">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_span="3"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/perms_msg" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="6">
+
+            <TextView
+                android:id="@+id/editTextTextMultiLine"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_span="3"
+                android:layout_weight="2"
+                android:ems="10"
+                android:fontFamily="serif-monospace"
+                android:gravity="fill"
+                android:hint="@string/carrier_configuration_in_json_format"
+                android:scrollbarAlwaysDrawHorizontalTrack="false"
+                android:scrollbarAlwaysDrawVerticalTrack="false"
+                android:scrollbarStyle="insideInset"
+                android:scrollbars="horizontal|vertical"
+                android:scrollHorizontally="true"
+                android:textIsSelectable="true"
+                android:focusable="true"
+                android:longClickable="true"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/button"
+                android:layout_column="0"
+                android:onClick="OnClick"
+                android:text="@string/share_json"
+                app:icon="@android:drawable/ic_menu_share" />
+
+            <Space
+                android:layout_column="1"
+                android:layout_weight="5" />
+
+            <Button
+                android:id="@+id/button2"
+                android:layout_column="2"
+                android:onClick="OnClick2"
+                android:text="@string/show_json"
+                app:icon="@android:drawable/ic_menu_search" />
+
+        </TableRow>
+
+    </TableLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
