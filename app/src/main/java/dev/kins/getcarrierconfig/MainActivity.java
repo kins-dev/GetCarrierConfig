@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private <T>String GetIntArray(int[] arr, String indent)
+    private String GetIntArray(int[] arr, String indent)
     {
         StringBuilder value= new StringBuilder();
         String itemIndent=getString(R.string.indent);
