@@ -1,10 +1,11 @@
 <resources>
-    <string name="app_name">GetCarrierConfig</string>
+    <string name="app_name">Get Carrier Config</string>
     <string name="share_json">Share JSON</string>
     <string name="PermWarning">Make sure app has phone read permission</string>
     <string name="TAG">GetCarrierConfig</string>
-    <string name="indent">\t</string>
-    <string name="perms_msg">This app requires phone read permissions.\nThe description of those permissions is overly broad.</string>
+    <string name="indent">"    "</string>
+    <string name="perms_msg">This app requires phone read permissions.\nThe description of those permissions is overly broad.\nPhone read permission does not allow making phone calls.</string>
     <string name="show_json">Show JSON</string>
-    <string name="carrier_configuration_in_json_format">Carrier configuration in JSON format</string>
+    <string name="carrier_configuration_in_json_format">\n\nPress one of the buttons below to get your carrier configuration in JSON format</string>
+    <string name="html_indent"><![CDATA[&nbsp;&nbsp;&nbsp;&nbsp;]]></string>
 </resources>
