@@ -14,30 +14,88 @@ import android.os.Build;
 import android.telephony.CarrierConfigManager;
 import android.os.PersistableBundle;
 import android.telephony.TelephonyManager;
-import android.text.InputType;
+import android.text.Html;
 import android.util.Log;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Button;
 
 import com.google.android.material.snackbar.Snackbar;
 
 import java.lang.reflect.Field;
+import java.util.Locale;
 import java.util.Objects;
-
 
 public class MainActivity extends AppCompatActivity {
 
     static final int PHONE_PERMISSION_CODE = 100;
     static final int PHONE_PERMISSION_SHARE_CODE = 101;
-    private TextView editText = null;
+    private TextView textView = null;
+    private boolean hasPermissions = false;
 
-    private String QuoteString(Object o)
-    {
-        return String.format("\"%s\"",
-                o.toString().replaceAll("\"", "\\\\\""));
+    enum CODE_TYPE {
+        type, keyword, literal, comment, string, punctuation, plain
     }
 
+    private static String ElementColor(CODE_TYPE ct)
+    {
+        switch (ct) {
+            case type:
+                return "#87cef9";
+            case keyword:
+                return "#00ff00";
+            case literal:
+                return "#ffff00";
+            case comment:
+                return "#999999";
+            case string:
+                return "#ff4500";
+            case punctuation:
+                return "#eeeeee";
+            case plain:
+            default:
+        }
+        return "#ffffff";
+    }
+
+
+    private String HandleWhitespace(String s)
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        String [] lines = s.split("\n");
+        for (String line : lines) {
+            stringBuilder.append("<p><tt>");
+            stringBuilder.append(line.replaceAll(getString(R.string.indent), getString(R.string.html_indent)));
+            stringBuilder.append("</tt></p>");
+        }
+        return stringBuilder.toString();
+    }
+
+    private String RemoveAllSpans(String s)
+    {
+        return s.replaceAll("<span style=\"color:#[0-9a-f]{6}\">(.*?)</span>", "$1");
+    }
+
+    private String AddSpan(String s, CODE_TYPE c)
+    {
+        return String.format("<span style=\"color:%s\">%s</span>", ElementColor(c), s);
+    }
+
+    /**
+     * @param o Object to turn into a string
+     * @return String of the object, replacing " with \" and newlines with \n
+     */
+    private String QuoteString(Object o)
+    {
+        return AddSpan(String.format("\"%s\"",
+                o.toString().replaceAll("\"", "\\\\\"")).replaceAll("\n", "\\\\n"),
+                CODE_TYPE.string);
+    }
+
+    /**
+     * @return String with the consumer name of a device
+     */
     private StringBuilder GetDeviceName() {
         StringBuilder result;
         String manufacturer = Build.MANUFACTURER;
@@ -52,6 +110,10 @@ public class MainActivity extends AppCompatActivity {
         return result;
     }
 
+    /**
+     * @param s String to capitalize
+     * @return String with the first letter in each word in upper case
+     */
     private String Capitalize(String s) {
         if (s == null || s.length() == 0) {
             return "";
@@ -64,38 +126,47 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * @param arr Integer array to add to the JSON
+     * @param indent How far we should be indenting
+     * @return String of JSON that represents this int array
+     */
     private String GetIntArray(int[] arr, String indent)
     {
         StringBuilder value= new StringBuilder();
         String itemIndent=getString(R.string.indent);
         String prefix= String.format("\n%s", indent);
         String suffix="";
-        value.append("[");
+        value.append(AddSpan("[", CODE_TYPE.type));
         for (int i : arr) {
             value.append(prefix);
             value.append(itemIndent);
-            value.append(i);
-            prefix = String.format(",\n%s", indent);
+            value.append(AddSpan(String.format(Locale.US, "%d",i), CODE_TYPE.literal));
+            prefix = AddSpan(",", CODE_TYPE.punctuation) + "\n" +indent;
             suffix = String.format("\n%s", indent);
         }
-        return value.append(suffix).append("]").toString();
+        return value.append(suffix).append(AddSpan("]", CODE_TYPE.type)).toString();
     }
-
+    /**
+     * @param arr Object array to add to the JSON
+     * @param indent How far we should be indenting
+     * @return String of JSON that represents this object array
+     */
     private String GetArray(Object[] arr, String indent)
     {
         StringBuilder value= new StringBuilder();
         String itemIndent = getString(R.string.indent);
         String prefix= String.format("\n%s", indent);
         String suffix="";
-        value.append("[");
+        value.append(AddSpan("[", CODE_TYPE.type));
         for (Object o : arr) {
             value.append(prefix);
             value.append(itemIndent);
             value.append(MakeJsonString(o, String.format("%s%s", indent, itemIndent)));
-            prefix = String.format(",\n%s", indent);
+            prefix = AddSpan(",", CODE_TYPE.punctuation) + "\n" +indent;
             suffix = String.format("\n%s", indent);
         }
-        return value.append(suffix).append("]").toString();
+        return value.append(suffix).append(AddSpan("]", CODE_TYPE.type)).toString();
     }
 
     /**
@@ -110,19 +181,27 @@ public class MainActivity extends AppCompatActivity {
             if (o instanceof int[]) return GetIntArray((int[]) o, indent);
             Log.v(getString(R.string.TAG), String.format("Unhandled type: %s", o.getClass()));
         }
-        if ((o instanceof Boolean) ||
-                    (o instanceof Long) ||
-                    (o instanceof Integer) ||
-                    (o instanceof Double) ||
-                    (o instanceof Float)) {
-            return o.toString();
+        if (o instanceof Boolean)
+            return AddSpan(o.toString(), CODE_TYPE.keyword);
+        if((o instanceof Long) ||
+            (o instanceof Integer) ||
+            (o instanceof Double) ||
+            (o instanceof Float)) {
+            return AddSpan(o.toString(), CODE_TYPE.literal);
         }
         return QuoteString(o);
     }
 
-    // Function to check and request permission
+    /** Checks to see if the user needs permissions and requests them if needed
+     * @param permission Permission to check
+     * @param requestCode Code used to signal if this is a share request or a view request
+     */
     public void CheckPermission(String permission, int requestCode)
     {
+        Button b1 = findViewById(R.id.button);
+        Button b2 = findViewById(R.id.button2);
+        b1.setEnabled(false);
+        b2.setEnabled(false);
         // Checking if permission is not granted
         if (ContextCompat.checkSelfPermission(MainActivity.this, permission) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[] { permission }, requestCode);
@@ -131,10 +210,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // This function is called when the user accepts or decline the permission.
-    // Request Code is used to check which permission called this function.
-    // This request code is provided when the user is prompt for permission.
-
+    /** If the user needed to accept permissions, process the result
+     * @param requestCode Code used to signal if this is a share request or a view request
+     * @param permissions Permissions requested
+     * @param grantResults Did the user say yes or no
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
@@ -147,34 +227,62 @@ public class MainActivity extends AppCompatActivity {
                 GatherData(requestCode == PHONE_PERMISSION_SHARE_CODE);
             } else {
                 ShowMissingPermissionsNotice();
+                Button b1 = findViewById(R.id.button);
+                Button b2 = findViewById(R.id.button2);
+                b1.setEnabled(true);
+                b2.setEnabled(true);
             }
         }
     }
 
-    public void OnClick2(View view)
+    /** Click Callback
+     * @param view Called when the user clicks the Show JSON button
+     */
+    public void OnClick_View(View view)
     {
         CheckPermission(Manifest.permission.READ_PHONE_STATE, PHONE_PERMISSION_CODE);
     }
 
-    public void OnClick(View view)
+    /** Click Callback
+     * @param view Called when the user clicks the Share JSON button
+     */
+    public void OnClick_Share(View view)
     {
         CheckPermission(Manifest.permission.READ_PHONE_STATE, PHONE_PERMISSION_SHARE_CODE);
     }
 
+    /** Pulls date from the carrier config
+     * @param share Does the user want to share this data
+     */
     private void GatherData(boolean share) {
+        hasPermissions = true;
+        HideTextView();
         try{
-            String json_data = GenerateJSON().toString();
-            View v = findViewById(android.R.id.content);
-            editText.setText(json_data);
-
-            LogJSON(json_data);
+            String data = GenerateJSON().toString();
+            String plainJSON = RemoveAllSpans(data);
+            String html = HandleWhitespace(data);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                textView.setText(Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT));
+            else
+                textView.setText(Html.fromHtml(html));
+            LogData(html);
             if(share) {
-                ShareJSON(json_data);
+                ShareJSON(plainJSON);
             }
-        }catch (Exception ex)
-        {
+        }catch (Exception ex) {
             ShowMissingPermissionsNotice();
+        }finally {
+            Button b1 = findViewById(R.id.button);
+            Button b2 = findViewById(R.id.button2);
+            b1.setEnabled(true);
+            b2.setEnabled(true);
         }
+    }
+
+    private void HideTextView() {
+        TextView tv = findViewById(R.id.textView);
+        tv.setVisibility(View.GONE);
+        tv.setText("");
     }
 
     private String GetCarrierName()
@@ -193,28 +301,32 @@ public class MainActivity extends AppCompatActivity {
         Class<?>[] nested_classes = ccm_cls.getDeclaredClasses();
         CarrierConfigManager ccm = context.getSystemService(ccm_cls);
         PersistableBundle carrierConfig = ccm.getConfigForSubId(1);
-        json.append("{\n");
+        json.append(AddSpan("{", CODE_TYPE.type));
+        json.append("\n");
         json.append(indent);
         json.append(QuoteString("Carrier"));
-        json.append(": ");
+        json.append(AddSpan(": ", CODE_TYPE.punctuation));
         json.append(QuoteString(GetCarrierName()));
-        json.append(",\n");
+        json.append(AddSpan(",", CODE_TYPE.punctuation));
+        json.append("\n");
         json.append(indent);
         json.append(QuoteString("Device"));
-        json.append(": ");
+        json.append(AddSpan(": ", CODE_TYPE.punctuation));
         json.append(QuoteString(GetDeviceName().toString()));
 
         json.append(GetClassFieldData(ccm_cls, ccm, carrierConfig, indent));
         for (Class<?> current_class : nested_classes) {
             json.append(GetClassFieldData(current_class, ccm, carrierConfig, indent));
         }
-        json.append("\n}");
+        json.append("\n");
+        json.append(AddSpan("}", CODE_TYPE.type));
+
         return json;
     }
 
     private StringBuilder GetClassFieldData(Class<?> current_class, CarrierConfigManager ccm, PersistableBundle carrierConfig, String indent) {
         StringBuilder json = new StringBuilder();
-        String prefix=",\n" + indent;
+        String prefix= AddSpan(",", CODE_TYPE.punctuation) + "\n" + indent;
         Field[] fields = current_class.getFields();
         for (Field field : fields) {
             String name = field.getName();
@@ -228,10 +340,9 @@ public class MainActivity extends AppCompatActivity {
                     {
                         continue;
                     }
-                    String element = String.format("%s%s: %s",
-                            prefix,
-                            QuoteString(name),
-                            MakeJsonString(value, indent));
+                    String element = prefix + QuoteString(name) +
+                            AddSpan(": ", CODE_TYPE.punctuation) +
+                            MakeJsonString(value, indent);
                     json.append(element);
                 } catch (Exception ex) {
                     Log.v(getString(R.string.TAG), "Couldn't get data for: " + name);
@@ -243,7 +354,7 @@ public class MainActivity extends AppCompatActivity {
         return json;
     }
 
-    private void LogJSON(String data) {
+    private void LogData(String data) {
         Log.v(getString(R.string.TAG), data);
     }
 
@@ -264,10 +375,22 @@ public class MainActivity extends AppCompatActivity {
         snackbar.show();
     }
 
+    protected void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putBoolean("hasPermissions", hasPermissions);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        editText = findViewById(R.id.editTextTextMultiLine);
+        textView = findViewById(R.id.textMultiLine);
+        if(savedInstanceState != null)
+        {
+            if(savedInstanceState.getBoolean("hasPermissions", false)){
+                hasPermissions = true;
+                HideTextView();
+            }
+        }
     }
 }
