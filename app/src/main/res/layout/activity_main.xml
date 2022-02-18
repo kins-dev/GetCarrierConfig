@@ -32,23 +32,22 @@
             android:layout_weight="6">
 
             <TextView
-                android:id="@+id/editTextTextMultiLine"
+                android:id="@+id/textMultiLine"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_span="3"
                 android:layout_weight="2"
                 android:ems="10"
-                android:fontFamily="serif-monospace"
-                android:gravity="fill"
+                android:focusable="true"
+                android:freezesText="true"
                 android:hint="@string/carrier_configuration_in_json_format"
+                android:longClickable="true"
                 android:scrollbarAlwaysDrawHorizontalTrack="false"
                 android:scrollbarAlwaysDrawVerticalTrack="false"
                 android:scrollbarStyle="insideInset"
                 android:scrollbars="horizontal|vertical"
                 android:scrollHorizontally="true"
-                android:textIsSelectable="true"
-                android:focusable="true"
-                android:longClickable="true"/>
+                android:textIsSelectable="true" />
         </TableRow>
 
         <TableRow
@@ -58,7 +57,7 @@
             <Button
                 android:id="@+id/button"
                 android:layout_column="0"
-                android:onClick="OnClick"
+                android:onClick="OnClick_Share"
                 android:text="@string/share_json"
                 app:icon="@android:drawable/ic_menu_share" />
 
@@ -69,7 +68,7 @@
             <Button
                 android:id="@+id/button2"
                 android:layout_column="2"
-                android:onClick="OnClick2"
+                android:onClick="OnClick_View"
                 android:text="@string/show_json"
                 app:icon="@android:drawable/ic_menu_search" />
 
